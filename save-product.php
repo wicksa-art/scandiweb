@@ -13,22 +13,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $db = new Database();
 
-    switch ($productType) {
-        case 'DVD':
-            $size = $_POST['size'];
-            $product = new DVD($sku, $name, $price, $size);
-            break;
-        case 'Book':
-            $weight = $_POST['weight'];
-            $product = new Book($sku, $name, $price, $weight);
-            break;
-        case 'Furniture':
-            $dimensions = $_POST['height'] . 'x' . $_POST['width'] . 'x' . $_POST['length'];
-            $product = new Furniture($sku, $name, $price, $dimensions);
-            break;
-    }
+    $existingProduct = $db->getProductBySKU($sku);
+    if ($existingProduct !== null) {
+        echo '<script>alert("A product with this SKU already exists. Please, provide a unique SKU."); window.location.href="add-product.php";</script>';
+    } else {
+        switch ($productType) {
+            case 'DVD':
+                $size = $_POST['size'];
+                $product = new DVD($sku, $name, $price, $size);
+                break;
+            case 'Book':
+                $weight = $_POST['weight'];
+                $product = new Book($sku, $name, $price, $weight);
+                break;
+            case 'Furniture':
+                $dimensions = $_POST['height'] . 'x' . $_POST['width'] . 'x' . $_POST['length'];
+                $product = new Furniture($sku, $name, $price, $dimensions);
+                break;
+        }
 
-    $db->saveProduct($product);
-    header('Location: index.php');  // Redirect to Product List page
+        $db->saveProduct($product);
+        header('Location: index.php');
+    }
 }
 ?>

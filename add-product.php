@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
 
@@ -53,7 +55,24 @@
         document.getElementById('dvdAttributes').style.display = (productType === 'DVD') ? 'block' : 'none';
         document.getElementById('bookAttributes').style.display = (productType === 'Book') ? 'block' : 'none';
         document.getElementById('furnitureAttributes').style.display = (productType === 'Furniture') ? 'block' : 'none';
+
+        document.getElementById('size').required = (productType === 'DVD');
+        document.getElementById('weight').required = (productType === 'Book');
+        document.getElementById('height').required = document.getElementById('width').required = document.getElementById('length').required = (productType === 'Furniture');
     }
+
+    document.getElementById('product_form').addEventListener('submit', function(event) {
+        var productType = document.getElementById('productType').value;
+        var valid = true;
+
+        if (document.getElementById('sku').value === '') {
+            alert('Please, submit required data');
+            valid = false;
+        }
+        if (!valid) {
+            event.preventDefault();
+        }
+    });
 </script>
 
 </body>

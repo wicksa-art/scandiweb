@@ -61,5 +61,16 @@ class Database {
                 return null;
         }
     }
+    
+    public function getProductBySKU($sku) {
+        $sql = $this->conn->prepare("SELECT * FROM Products WHERE sku = ?");
+        $sql->bind_param("s", $sku);
+        $sql->execute();
+        $result = $sql->get_result();
+        $row = $result->fetch_assoc();
+        $sql->close();
+        return $row ? $this->createProductObject($row) : null;
+    }
+
 }
 ?>
