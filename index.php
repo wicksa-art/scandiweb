@@ -43,26 +43,31 @@
 </table>
 
 <script type="text/javascript">
-    function massDelete() {
-        var selectedSkus = [];
-        document.querySelectorAll('.delete-checkbox:checked').forEach(function(checkbox) {
-            selectedSkus.push(checkbox.value);
-        });
-        if (selectedSkus.length > 0) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "delete-products.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    // Remove the deleted rows from the DOM
-                    document.querySelectorAll('.delete-checkbox:checked').forEach(function(checkbox) {
-                        checkbox.closest('tr').remove();
-                    });
-                }
-            };
-            xhr.send("skus=" + JSON.stringify(selectedSkus));
+function massDelete() {
+var selectedSkus = [];
+document.querySelectorAll('.delete-checkbox:checked').forEach(function(checkbox) {
+    selectedSkus.push(checkbox.value);
+});
+if (selectedSkus.length > 0) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "delete-products.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if(xhr.status == 200) {
+                document.querySelectorAll('.delete-checkbox:checked').forEach(function(checkbox) {
+                    checkbox.closest('tr').remove();
+                });
+                console.log("Products deleted successfully:", xhr.responseText);
+            } else {
+                console.error("Error deleting products:", xhr.status, xhr.statusText, xhr.responseText);
+            }
         }
-    }
+    };
+    xhr.send("skus=" + JSON.stringify(selectedSkus));
+}
+}
+
 </script>
 
 </body>
