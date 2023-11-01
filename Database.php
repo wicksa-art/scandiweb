@@ -8,11 +8,18 @@ class Database {
     private $conn;
 
     public function __construct() {
-    $this->conn = new mysqli("6.tcp.eu.ngrok.io:11260", "root", "", "ProductDB");
-    if ($this->conn->connect_error) {
-        die("Connection failed: " . $this->conn->connect_error);
+        // Use environment variables or a configuration file for credentials
+        $dbHost = 'localhost';
+        $dbUser = 'id21488153_reverentflake';
+        $dbPass = 'Myshirtislined!1';
+        $dbName = 'id21488153_productdb';
+
+        $this->conn = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
+
+        if ($this->conn->connect_error) {
+            throw new Exception("Connection failed: " . $this->conn->connect_error);
+        }
     }
-}
 
 
 public function saveProduct($product) {
