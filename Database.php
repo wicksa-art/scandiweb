@@ -24,7 +24,7 @@ public function saveProduct($product) {
     $bookAttribute = $type === 'Book' ? $specificAttribute : null;
     $furnitureAttribute = $type === 'Furniture' ? $specificAttribute : null;
 
-    $sql->bind_param("ssdsss",
+    $sql->bind_param("ssdssss",
         $product->getSku(),
         $product->getName(),
         $product->getPrice(),
@@ -37,6 +37,7 @@ public function saveProduct($product) {
     $sql->execute();
     $sql->close();
 }
+
 
 public function deleteProducts($productIds) {
     $ids = implode(',', array_map('intval', $productIds));
