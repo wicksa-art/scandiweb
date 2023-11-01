@@ -8,11 +8,12 @@ class Database {
     private $conn;
 
     public function __construct() {
-        $this->conn = new mysqli("localhost", "root", "Maks2101!", "ProductDB");
-        if ($this->conn->connect_error) {
-            die("Connection failed: " . $this->conn->connect_error);
-        }
+    $this->conn = new mysqli("5.tcp.eu.ngrok.io:10365", "root", "", "ProductDB");
+    if ($this->conn->connect_error) {
+        die("Connection failed: " . $this->conn->connect_error);
     }
+}
+
 
     public function saveProduct($product) {
         $sql = $this->conn->prepare("INSERT INTO Products (sku, name, price, type, size, weight, dimensions) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -61,7 +62,7 @@ class Database {
                 return null;
         }
     }
-    
+
     public function getProductBySKU($sku) {
         $sql = $this->conn->prepare("SELECT * FROM Products WHERE sku = ?");
         $sql->bind_param("s", $sku);

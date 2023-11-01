@@ -13,10 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $db = new Database();
 
-    $existingProduct = $db->getProductBySKU($sku);
-    if ($existingProduct !== null) {
-        echo '<script>alert("A product with this SKU already exists. Please, provide a unique SKU."); window.location.href="add-product.php";</script>';
-    } else {
+    try {
         switch ($productType) {
             case 'DVD':
                 $size = $_POST['size'];
@@ -34,6 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $db->saveProduct($product);
         header('Location: index.php');
+
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
 ?>
