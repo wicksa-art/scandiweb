@@ -82,4 +82,3 @@ public function getProductBySKU($sku) {
 
 }
 ?>
-This updated code includes the adjustments to prevent the "Only variables should be passed by reference" error and the fatal error that were occurring when you tried to add a product.

@@ -53,8 +53,12 @@
             xhr.open("POST", "delete-products.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200)
-                    window.location.reload();  // Reload the page to reflect the changes
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // Remove the deleted rows from the DOM
+                    document.querySelectorAll('.delete-checkbox:checked').forEach(function(checkbox) {
+                        checkbox.closest('tr').remove();
+                    });
+                }
             };
             xhr.send("skus=" + JSON.stringify(selectedSkus));
         }
