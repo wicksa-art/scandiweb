@@ -8,7 +8,7 @@ class Database {
     private $conn;
 
     public function __construct() {
-    $this->conn = new mysqli("5.tcp.eu.ngrok.io:17193", "root", "", "ProductDB");
+    $this->conn = new mysqli("5.tcp.eu.ngrok.io:17137", "root", "", "ProductDB");
     if ($this->conn->connect_error) {
         die("Connection failed: " . $this->conn->connect_error);
     }
