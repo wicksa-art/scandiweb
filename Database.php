@@ -39,14 +39,17 @@ public function saveProduct($product) {
 }
 
 
-public function deleteProducts($productIds) {
-    $placeholders = rtrim(str_repeat('?,', count($productIds)), ',');
-    $sql = "DELETE FROM Products WHERE id IN ($placeholders)";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param(str_repeat('i', count($productIds)), ...$productIds);
-    $stmt->execute();
-    $stmt->close();
+public function deleteProducts($productSkus) {
+    $skus = implode("','", array_map([$this->conn, 'real_escape_string'], $productSkus));
+    $sql = "DELETE FROM Products WHERE sku IN ('$skus')";
+    if ($this->conn->query($sql) === TRUE) {
+        return true;
+    } else {
+        error_log("Error deleting products: " . $this->conn->error);  // Log the error
+        return false;
+    }
 }
+
 
 
 public function getProducts() {
