@@ -15,63 +15,70 @@ class Database {
 }
 
 
-    public function saveProduct($product) {
-        $sql = $this->conn->prepare("INSERT INTO Products (sku, name, price, type, size, weight, dimensions) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $type = get_class($product);
-        $specificAttribute = $product->getSpecificAttribute();
-        $sql->bind_param("ssdsss",
-            $product->getSku(),
-            $product->getName(),
-            $product->getPrice(),
-            $type,
-            $type === 'DVD' ? $specificAttribute : null,
-            $type === 'Book' ? $specificAttribute : null,
-            $type === 'Furniture' ? $specificAttribute : null
-        );
-        $sql->execute();
-        $sql->close();
-    }
+public function saveProduct($product) {
+    $sql = $this->conn->prepare("INSERT INTO Products (sku, name, price, type, size, weight, dimensions) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $type = get_class($product);
+    $specificAttribute = $product->getSpecificAttribute();
 
-    public function deleteProducts($productIds) {
-        $ids = implode(',', array_map('intval', $productIds));
-        $sql = "DELETE FROM Products WHERE id IN ($ids)";
-        $this->conn->query($sql);
-    }
+    $dvdAttribute = $type === 'DVD' ? $specificAttribute : null;
+    $bookAttribute = $type === 'Book' ? $specificAttribute : null;
+    $furnitureAttribute = $type === 'Furniture' ? $specificAttribute : null;
 
-    public function getProducts() {
-        $result = $this->conn->query("SELECT * FROM Products ORDER BY id");
-        $products = array();
-        while($row = $result->fetch_assoc()) {
-            $product = $this->createProductObject($row);
-            if ($product !== null) {
-                $products[] = $product;
-            }
-        }
-        return $products;
-    }
+    $sql->bind_param("ssdsss",
+        $product->getSku(),
+        $product->getName(),
+        $product->getPrice(),
+        $type,
+        $dvdAttribute,
+        $bookAttribute,
+        $furnitureAttribute
+    );
 
-    private function createProductObject($row) {
-        switch ($row['type']) {
-            case 'DVD':
-                return new DVD($row['sku'], $row['name'], $row['price'], $row['size']);
-            case 'Book':
-                return new Book($row['sku'], $row['name'], $row['price'], $row['weight']);
-            case 'Furniture':
-                return new Furniture($row['sku'], $row['name'], $row['price'], $row['dimensions']);
-            default:
-                return null;
+    $sql->execute();
+    $sql->close();
+}
+
+public function deleteProducts($productIds) {
+    $ids = implode(',', array_map('intval', $productIds));
+    $sql = "DELETE FROM Products WHERE id IN ($ids)";
+    $this->conn->query($sql);
+}
+
+public function getProducts() {
+    $result = $this->conn->query("SELECT * FROM Products ORDER BY id");
+    $products = array();
+    while($row = $result->fetch_assoc()) {
+        $product = $this->createProductObject($row);
+        if ($product !== null) {
+            $products[] = $product;
         }
     }
+    return $products;
+}
 
-    public function getProductBySKU($sku) {
-        $sql = $this->conn->prepare("SELECT * FROM Products WHERE sku = ?");
-        $sql->bind_param("s", $sku);
-        $sql->execute();
-        $result = $sql->get_result();
-        $row = $result->fetch_assoc();
-        $sql->close();
-        return $row ? $this->createProductObject($row) : null;
+private function createProductObject($row) {
+    switch ($row['type']) {
+        case 'DVD':
+            return new DVD($row['sku'], $row['name'], $row['price'], $row['size']);
+        case 'Book':
+            return new Book($row['sku'], $row['name'], $row['price'], $row['weight']);
+        case 'Furniture':
+            return new Furniture($row['sku'], $row['name'], $row['price'], $row['dimensions']);
+        default:
+            return null;
     }
+}
+
+public function getProductBySKU($sku) {
+    $sql = $this->conn->prepare("SELECT * FROM Products WHERE sku = ?");
+    $sql->bind_param("s", $sku);
+    $sql->execute();
+    $result = $sql->get_result();
+    $row = $result->fetch_assoc();
+    $sql->close();
+    return $row ? $this->createProductObject($row) : null;
+}
 
 }
 ?>
+This updated code includes the adjustments to prevent the "Only variables should be passed by reference" error and the fatal error that were occurring when you tried to add a product.
