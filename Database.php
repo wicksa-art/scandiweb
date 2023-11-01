@@ -40,10 +40,14 @@ public function saveProduct($product) {
 
 
 public function deleteProducts($productIds) {
-    $ids = implode(',', array_map('intval', $productIds));
-    $sql = "DELETE FROM Products WHERE id IN ($ids)";
-    $this->conn->query($sql);
+    $placeholders = rtrim(str_repeat('?,', count($productIds)), ',');
+    $sql = "DELETE FROM Products WHERE id IN ($placeholders)";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param(str_repeat('i', count($productIds)), ...$productIds);
+    $stmt->execute();
+    $stmt->close();
 }
+
 
 public function getProducts() {
     $result = $this->conn->query("SELECT * FROM Products ORDER BY id");
